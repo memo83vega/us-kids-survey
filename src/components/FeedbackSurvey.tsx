@@ -9,17 +9,17 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 
 const surveySchema = z.object({
-  overallEnjoyment: z.string(),
-  organizationQuality: z.string(),
-  supportSatisfaction: z.string(),
-  scheduleTimeliness: z.string(),
+  overallEnjoyment: z.string().min(1, "Please select an option"),
+  organizationQuality: z.string().min(1, "Please select an option"),
+  supportSatisfaction: z.string().min(1, "Please select an option"),
+  scheduleTimeliness: z.string().min(1, "Please select an option"),
   delaysComment: z.string().optional().nullable(),
-  communication: z.string(),
-  troubleshooting: z.string(),
+  communication: z.string().min(1, "Please select an option"),
+  troubleshooting: z.string().min(1, "Please select an option"),
   issuesComment: z.string().optional().nullable(),
-  venueSetup: z.string(),
+  venueSetup: z.string().min(1, "Please select an option"),
   layoutComment: z.string().optional().nullable(),
-  backupStrategies: z.string(),
+  backupStrategies: z.string().min(1, "Please select an option"),
   backupComment: z.string().optional().nullable(),
   generalFeedback: z.string().optional().nullable(),
 });
@@ -41,9 +41,17 @@ export const FeedbackSurvey = () => {
   } = useForm<SurveyData>({
     resolver: zodResolver(surveySchema),
     defaultValues: {
+      overallEnjoyment: "",
+      organizationQuality: "",
+      supportSatisfaction: "",
+      scheduleTimeliness: "",
       delaysComment: "",
+      communication: "",
+      troubleshooting: "",
       issuesComment: "",
+      venueSetup: "",
       layoutComment: "",
+      backupStrategies: "",
       backupComment: "",
       generalFeedback: ""
     }

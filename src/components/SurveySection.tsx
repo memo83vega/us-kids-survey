@@ -30,10 +30,14 @@ export const SurveySection = ({ title, questions }: SurveySectionProps) => {
             </Label>
             
             {question.type === "radio" && question.options && (
-              <RadioGroup className="space-y-2" {...question.register(question.id)}>
+              <RadioGroup className="space-y-2">
                 {question.options.map((option) => (
                   <div key={option.value} className="flex items-center space-x-2">
-                    <RadioGroupItem value={option.value} id={`${question.id}-${option.value}`} />
+                    <RadioGroupItem 
+                      value={option.value} 
+                      id={`${question.id}-${option.value}`}
+                      {...question.register(question.id, { required: true })}
+                    />
                     <Label htmlFor={`${question.id}-${option.value}`} className="text-sm">
                       {option.label}
                     </Label>
