@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -29,16 +29,45 @@ type SurveyData = z.infer<typeof surveySchema>;
 export const FeedbackSurvey = () => {
   const [currentSection, setCurrentSection] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [progressValue, setProgressValue] = useState(0);
   const { toast } = useToast();
   
   const {
     register,
     handleSubmit,
     reset,
+    watch,
     formState: { errors, isDirty },
   } = useForm<SurveyData>({
     resolver: zodResolver(surveySchema),
   });
+
+  // Watch all form fields to calculate progress
+  const formValues = watch();
+
+  // Calculate progress based on answered questions
+  useEffect(() => {
+    const requiredFields = [
+      'overallEnjoyment', 
+      'organizationQuality', 
+      'supportSatisfaction', 
+      'scheduleTimeliness',
+      'communication',
+      'troubleshooting',
+      'venueSetup',
+      'backupStrategies'
+    ];
+    
+    // Count how many required fields have been answered
+    const answeredFields = requiredFields.filter(field => !!formValues[field as keyof SurveyData]);
+    
+    // Calculate progress - each required field is worth an equal percentage
+    // Start at 33% per section entry, then add progress as questions are answered
+    const sectionBaseProgress = 33 * (currentSection > 0 ? Math.min(currentSection, 1) : 0);
+    const questionProgress = Math.round((answeredFields.length / requiredFields.length) * 67);
+    
+    setProgressValue(sectionBaseProgress + questionProgress);
+  }, [formValues, currentSection]);
 
   const onSubmit = async (data: SurveyData) => {
     setIsSubmitting(true);
@@ -52,10 +81,9 @@ export const FeedbackSurvey = () => {
     });
     reset();
     setCurrentSection(1);
+    setProgressValue(0);
     setIsSubmitting(false);
   };
-
-  const progress = (currentSection / 3) * 100;
 
   return (
     <div className="space-y-8 animate-fade-in">
@@ -69,9 +97,9 @@ export const FeedbackSurvey = () => {
       <div className="space-y-2">
         <div className="flex justify-between text-sm text-gray-600">
           <span>Progress</span>
-          <span>{Math.round(progress)}%</span>
+          <span>{progressValue}%</span>
         </div>
-        <Progress value={progress} className="h-2" />
+        <Progress value={progressValue} className="h-2" />
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-12">
