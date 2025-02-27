@@ -13,15 +13,15 @@ const surveySchema = z.object({
   organizationQuality: z.string(),
   supportSatisfaction: z.string(),
   scheduleTimeliness: z.string(),
-  delaysComment: z.string().optional(),
+  delaysComment: z.string().optional().nullable(),
   communication: z.string(),
   troubleshooting: z.string(),
-  issuesComment: z.string().optional(),
+  issuesComment: z.string().optional().nullable(),
   venueSetup: z.string(),
-  layoutComment: z.string().optional(),
+  layoutComment: z.string().optional().nullable(),
   backupStrategies: z.string(),
-  backupComment: z.string().optional(),
-  generalFeedback: z.string().optional(),
+  backupComment: z.string().optional().nullable(),
+  generalFeedback: z.string().optional().nullable(),
 });
 
 type SurveyData = z.infer<typeof surveySchema>;
@@ -40,6 +40,13 @@ export const FeedbackSurvey = () => {
     formState: { errors, isDirty },
   } = useForm<SurveyData>({
     resolver: zodResolver(surveySchema),
+    defaultValues: {
+      delaysComment: "",
+      issuesComment: "",
+      layoutComment: "",
+      backupComment: "",
+      generalFeedback: ""
+    }
   });
 
   // Watch all form fields to calculate progress
