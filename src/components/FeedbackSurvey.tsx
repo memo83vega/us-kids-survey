@@ -61,13 +61,11 @@ export const FeedbackSurvey = () => {
     // Count how many required fields have been answered
     const answeredFields = requiredFields.filter(field => !!formValues[field as keyof SurveyData]);
     
-    // Calculate progress - each required field is worth an equal percentage
-    // Start at 33% per section entry, then add progress as questions are answered
-    const sectionBaseProgress = 33 * (currentSection > 0 ? Math.min(currentSection, 1) : 0);
-    const questionProgress = Math.round((answeredFields.length / requiredFields.length) * 67);
+    // Calculate progress as a percentage of answered required questions
+    const progress = Math.round((answeredFields.length / requiredFields.length) * 100);
     
-    setProgressValue(sectionBaseProgress + questionProgress);
-  }, [formValues, currentSection]);
+    setProgressValue(progress);
+  }, [formValues]);
 
   const onSubmit = async (data: SurveyData) => {
     setIsSubmitting(true);
