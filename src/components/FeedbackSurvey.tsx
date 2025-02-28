@@ -2,29 +2,12 @@
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import { SurveySection } from "./SurveySection";
 import { useToast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-
-const surveySchema = z.object({
-  overallEnjoyment: z.string().min(1, "Please select an option"),
-  organizationQuality: z.string().min(1, "Please select an option"),
-  supportSatisfaction: z.string().min(1, "Please select an option"),
-  scheduleTimeliness: z.string().min(1, "Please select an option"),
-  delaysComment: z.string().optional().nullable(),
-  communication: z.string().min(1, "Please select an option"),
-  troubleshooting: z.string().min(1, "Please select an option"),
-  issuesComment: z.string().optional().nullable(),
-  venueSetup: z.string().min(1, "Please select an option"),
-  layoutComment: z.string().optional().nullable(),
-  backupStrategies: z.string().min(1, "Please select an option"),
-  backupComment: z.string().optional().nullable(),
-  generalFeedback: z.string().optional().nullable(),
-});
-
-type SurveyData = z.infer<typeof surveySchema>;
+import { submitSurveyResponse, surveySchema } from "@/services/surveyService";
+import type { SurveyResponse } from "@/services/surveyService";
 
 export const FeedbackSurvey = () => {
   const [currentSection, setCurrentSection] = useState(1);
@@ -38,7 +21,7 @@ export const FeedbackSurvey = () => {
     reset,
     watch,
     formState: { errors, isDirty },
-  } = useForm<SurveyData>({
+  } = useForm<SurveyResponse>({
     resolver: zodResolver(surveySchema),
     defaultValues: {
       overallEnjoyment: "",
@@ -74,7 +57,7 @@ export const FeedbackSurvey = () => {
     ];
     
     // Count how many required fields have been answered
-    const answeredFields = requiredFields.filter(field => !!formValues[field as keyof SurveyData]);
+    const answeredFields = requiredFields.filter(field => !!formValues[field as keyof SurveyResponse]);
     
     // Calculate progress as a percentage of answered required questions
     const progress = Math.round((answeredFields.length / requiredFields.length) * 100);
@@ -82,20 +65,38 @@ export const FeedbackSurvey = () => {
     setProgressValue(progress);
   }, [formValues]);
 
-  const onSubmit = async (data: SurveyData) => {
+  const onSubmit = async (data: SurveyResponse) => {
     setIsSubmitting(true);
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    console.log("Form submitted:", data);
-    toast({
-      title: "Thank you for your feedback!",
-      description: "Your responses will help us improve future events.",
-      duration: 5000,
-    });
-    reset();
-    setCurrentSection(1);
-    setProgressValue(0);
-    setIsSubmitting(false);
+    
+    try {
+      // Send data to Supabase
+      await submitSurveyResponse(data);
+
+      // Show success message
+      toast({
+        title: "Thank you for your feedback!",
+        description: "Your responses have been saved and will help us improve future events.",
+        duration: 5000,
+      });
+      
+      // Reset form
+      reset();
+      setCurrentSection(1);
+      setProgressValue(0);
+      
+    } catch (error) {
+      console.error("Error submitting survey:", error);
+      
+      // Show error message
+      toast({
+        title: "Submission failed",
+        description: "We couldn't save your responses. Please try again later.",
+        variant: "destructive",
+        duration: 5000,
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
