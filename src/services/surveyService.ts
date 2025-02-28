@@ -22,20 +22,37 @@ export const surveySchema = z.object({
 });
 
 export async function submitSurveyResponse(data: SurveyResponse) {
-  // Add submission timestamp
-  const submissionData = {
-    ...data,
-    submitted_at: new Date().toISOString(),
-  };
+  console.log('Submitting survey response:', data);
+  
+  try {
+    // Add submission timestamp
+    const submissionData = {
+      ...data,
+      submitted_at: new Date().toISOString(),
+    };
 
-  const { data: result, error } = await supabase
-    .from('survey_responses')
-    .insert([submissionData]);
+    // Check if Supabase is properly initialized
+    if (!supabase) {
+      console.error('Supabase client is not initialized');
+      throw new Error('Supabase client is not initialized');
+    }
 
-  if (error) {
-    console.error('Error submitting survey:', error);
-    throw new Error(`Failed to submit survey: ${error.message}`);
+    // Log that we're about to insert data
+    console.log('Inserting data into survey_responses table:', submissionData);
+
+    const { data: result, error } = await supabase
+      .from('survey_responses')
+      .insert([submissionData]);
+
+    if (error) {
+      console.error('Error submitting survey to Supabase:', error);
+      throw new Error(`Failed to submit survey: ${error.message}`);
+    }
+
+    console.log('Survey submitted successfully:', result);
+    return result;
+  } catch (error) {
+    console.error('Exception in submitSurveyResponse:', error);
+    throw error;
   }
-
-  return result;
 }
