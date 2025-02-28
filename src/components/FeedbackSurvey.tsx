@@ -100,26 +100,22 @@ export const FeedbackSurvey = () => {
 
   return (
     <div className="space-y-8 animate-fade-in">
-      <div className="text-center space-y-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-8 px-4 rounded-2xl shadow-lg mb-8 animate-bounce-in">
-        <h1 className="text-4xl font-bold tracking-tight text-white">US Kids Local Tour Feedback Survey</h1>
-        <p className="text-blue-100 max-w-2xl mx-auto font-medium">
+      <div className="text-center space-y-4">
+        <h1 className="text-4xl font-semibold tracking-tight">US Kids Local Tour Feedback Survey</h1>
+        <p className="text-gray-600 max-w-2xl mx-auto">
           Thank you for participating in the US Kids Local Tour! Your feedback is essential for us to improve future events. Please take a few minutes to complete this survey.
         </p>
       </div>
 
-      <div className="space-y-2 max-w-2xl mx-auto">
-        <div className="flex justify-between text-sm font-medium">
-          <span className="text-blue-700">Your Progress</span>
-          <span className="text-blue-700 font-bold">{progressValue}%</span>
+      <div className="space-y-2">
+        <div className="flex justify-between text-sm text-gray-600">
+          <span>Progress</span>
+          <span>{progressValue}%</span>
         </div>
-        <Progress value={progressValue} className="h-3 bg-blue-100" 
-          style={{
-            background: "linear-gradient(to right, #eef9ff, #e6f5ff)",
-          }} 
-        />
+        <Progress value={progressValue} className="h-2" />
       </div>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-12 max-w-3xl mx-auto">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-12">
         {currentSection === 1 && (
           <SurveySection
             title="Participant Satisfaction"
@@ -295,7 +291,7 @@ export const FeedbackSurvey = () => {
               type="button"
               variant="outline"
               onClick={() => setCurrentSection(currentSection - 1)}
-              className="w-32 rounded-full border-blue-400 text-blue-600 hover:bg-blue-50 transition-all"
+              className="w-32"
             >
               Previous
             </Button>
@@ -305,7 +301,7 @@ export const FeedbackSurvey = () => {
             <Button
               type="button"
               onClick={() => setCurrentSection(currentSection + 1)}
-              className="ml-auto w-32 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full font-bold shadow-md hover:shadow-lg transform hover:-translate-y-1 transition-all"
+              className="ml-auto w-32"
             >
               Next
             </Button>
@@ -313,7 +309,7 @@ export const FeedbackSurvey = () => {
             <Button
               type="submit"
               disabled={isSubmitting || !isDirty}
-              className="ml-auto w-32 bg-gradient-to-r from-green-500 to-teal-500 rounded-full font-bold shadow-md hover:shadow-lg transform hover:-translate-y-1 transition-all"
+              className="ml-auto w-32"
             >
               {isSubmitting ? "Submitting..." : "Submit"}
             </Button>
@@ -321,19 +317,19 @@ export const FeedbackSurvey = () => {
         </div>
       </form>
 
-      <div className="bg-gradient-to-br from-yellow-50 to-orange-50 p-6 rounded-xl border border-yellow-200 mt-8 shadow-md">
-        <h3 className="text-xl font-bold mb-4 text-indigo-800">Outcome & Next Steps</h3>
-        <ul className="space-y-3 text-indigo-700">
+      <div className="bg-gray-50 p-6 rounded-lg border border-gray-200 mt-8">
+        <h3 className="text-lg font-semibold mb-4">Outcome & Next Steps</h3>
+        <ul className="space-y-2 text-gray-600">
           <li className="flex items-start">
-            <span className="mr-2 text-yellow-500 text-xl">•</span>
+            <span className="mr-2">•</span>
             <span>Data-Driven Insights: Your responses will be analyzed to highlight strengths and identify areas for improvement.</span>
           </li>
           <li className="flex items-start">
-            <span className="mr-2 text-yellow-500 text-xl">•</span>
+            <span className="mr-2">•</span>
             <span>Action Plan: We will use this feedback to refine our processes, update event checklists, adjust staffing strategies, and improve our communication protocols.</span>
           </li>
           <li className="flex items-start">
-            <span className="mr-2 text-yellow-500 text-xl">•</span>
+            <span className="mr-2">•</span>
             <span>Continuous Improvement: Regular review meetings will be held to integrate these insights into future event planning cycles, ensuring that every tournament is progressively better organized.</span>
           </li>
         </ul>
